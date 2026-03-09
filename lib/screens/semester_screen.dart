@@ -6,6 +6,7 @@ import 'package:gal/gal.dart';
 import 'package:image_picker/image_picker.dart';
 import '../providers/gpa_provider.dart';
 import '../models/course.dart';
+import '../models/semester.dart';
 
 class SemesterScreen extends StatefulWidget {
   final String semesterId;
@@ -206,7 +207,7 @@ class _SemesterScreenState extends State<SemesterScreen> {
 
             return Column(
               children: [
-                _buildGPAHeader(semester.name, gpa, provider.is5PointScale),
+                _buildGPAHeader(semester, gpa, provider),
                 _buildCourseForm(context, provider.is5PointScale),
                 const Divider(height: 1),
                 Expanded(
@@ -239,9 +240,7 @@ class _SemesterScreenState extends State<SemesterScreen> {
                                 ),
                               ),
                               subtitle: Text(
-                                '\${course.units} Units${course.score != null
-                                        ? ' (\${course.score}%)'
-                                        : ''}',
+                                '${course.units} Units${course.score != null ? ' (${course.score}%)' : ''}',
                               ),
                               trailing: IconButton(
                                 icon: const Icon(
@@ -267,7 +266,10 @@ class _SemesterScreenState extends State<SemesterScreen> {
     );
   }
 
-  Widget _buildGPAHeader(String name, double gpa, bool is5Point) {
+  Widget _buildGPAHeader(Semester semester, double gpa, GpaProvider provider) {
+    final int regUnits = provider.getSemesterRegisteredUnits(semester);
+    final int passedUnits = provider.getSemesterPassedUnits(semester);
+
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
@@ -278,9 +280,26 @@ class _SemesterScreenState extends State<SemesterScreen> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Expanded(
-            child: Text(
-              name,
-              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  semester.name,
+                  style: const TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  'Registered: $regUnits Units',
+                  style: TextStyle(color: Colors.grey[700], fontSize: 13),
+                ),
+                Text(
+                  'Passed: $passedUnits Units',
+                  style: TextStyle(color: Colors.grey[700], fontSize: 13),
+                ),
+              ],
             ),
           ),
           Column(
@@ -295,7 +314,7 @@ class _SemesterScreenState extends State<SemesterScreen> {
                 ),
               ),
               Text(
-                'GPA (out of \${is5Point ? "5.0" : "4.0"})',
+                'GPA (out of ${provider.is5PointScale ? "5.0" : "4.0"})',
                 style: const TextStyle(color: Colors.grey, fontSize: 12),
               ),
             ],

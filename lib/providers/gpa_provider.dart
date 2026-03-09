@@ -139,4 +139,65 @@ class GpaProvider with ChangeNotifier {
     if (totalUnits == 0) return 0.0;
     return totalPoints / totalUnits;
   }
+
+  String getClassOfDegree() {
+    final cgpa = calculateCGPA();
+    if (cgpa == 0.0) return "N/A";
+
+    if (_is5PointScale) {
+      if (cgpa >= 4.50) return "First Class";
+      if (cgpa >= 3.50) return "Second Class Upper";
+      if (cgpa >= 2.40) return "Second Class Lower";
+      if (cgpa >= 1.50) return "Third Class";
+      if (cgpa >= 1.00) return "Pass";
+      return "Fail";
+    } else {
+      // 4.0 scale
+      if (cgpa >= 3.50) return "First Class / Distinction";
+      if (cgpa >= 3.00) return "Second Class Upper";
+      if (cgpa >= 2.00) return "Second Class Lower";
+      if (cgpa >= 1.00) return "Third Class";
+      return "Fail";
+    }
+  }
+
+  int getTotalRegisteredUnits() {
+    int total = 0;
+    for (var s in _semesters) {
+      for (var c in s.courses) {
+        total += c.units;
+      }
+    }
+    return total;
+  }
+
+  int getTotalPassedUnits() {
+    int total = 0;
+    for (var s in _semesters) {
+      for (var c in s.courses) {
+        if (gradeToPoints(c.grade) > 0) {
+          total += c.units;
+        }
+      }
+    }
+    return total;
+  }
+
+  int getSemesterRegisteredUnits(Semester semester) {
+    int total = 0;
+    for (var c in semester.courses) {
+      total += c.units;
+    }
+    return total;
+  }
+
+  int getSemesterPassedUnits(Semester semester) {
+    int total = 0;
+    for (var c in semester.courses) {
+      if (gradeToPoints(c.grade) > 0) {
+        total += c.units;
+      }
+    }
+    return total;
+  }
 }

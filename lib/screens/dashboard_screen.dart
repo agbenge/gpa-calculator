@@ -33,7 +33,7 @@ class DashboardScreen extends StatelessWidget {
 
           return Column(
             children: [
-              _buildHeader(cgpa, provider.is5PointScale),
+              _buildHeader(cgpa, provider),
               Expanded(
                 child: provider.semesters.isEmpty
                     ? _buildEmptyState()
@@ -166,7 +166,12 @@ class DashboardScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildHeader(double cgpa, bool is5Point) {
+  Widget _buildHeader(double cgpa, GpaProvider provider) {
+    final is5Point = provider.is5PointScale;
+    final String classOfDegree = provider.getClassOfDegree();
+    final int totalReg = provider.getTotalRegisteredUnits();
+    final int totalPass = provider.getTotalPassedUnits();
+
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(24),
@@ -196,8 +201,52 @@ class DashboardScreen extends StatelessWidget {
             'Out of ${is5Point ? "5.0" : "4.0"}',
             style: const TextStyle(color: Colors.white70, fontSize: 14),
           ),
+          if (cgpa > 0) ...[
+            const SizedBox(height: 16),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              decoration: BoxDecoration(
+                color: Colors.white.withOpacity(0.2),
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: Text(
+                classOfDegree,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ],
+          const SizedBox(height: 16),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              _buildStatCol('Registered Units', totalReg.toString()),
+              _buildStatCol('Passed Units', totalPass.toString()),
+            ],
+          ),
         ],
       ),
+    );
+  }
+
+  Widget _buildStatCol(String label, String value) {
+    return Column(
+      children: [
+        Text(
+          value,
+          style: const TextStyle(
+            color: Colors.white,
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        Text(
+          label,
+          style: const TextStyle(color: Colors.white70, fontSize: 12),
+        ),
+      ],
     );
   }
 
