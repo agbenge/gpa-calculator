@@ -213,46 +213,89 @@ class _SemesterScreenState extends State<SemesterScreen> {
                 Expanded(
                   child: semester.courses.isEmpty
                       ? const Center(
-                          child: Text(
-                            "No courses added yet.",
-                            style: TextStyle(color: Colors.grey),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                Icons.library_books_outlined,
+                                size: 64,
+                                color: Colors.grey,
+                              ),
+                              SizedBox(height: 16),
+                              Text(
+                                "No courses added yet.",
+                                style: TextStyle(
+                                  color: Colors.grey,
+                                  fontSize: 16,
+                                ),
+                              ),
+                            ],
                           ),
                         )
                       : ListView.builder(
+                          padding: const EdgeInsets.all(16),
                           itemCount: semester.courses.length,
                           itemBuilder: (context, index) {
                             final course = semester.courses[index];
-                            return ListTile(
-                              leading: CircleAvatar(
-                                backgroundColor: _getGradeColor(course.grade),
-                                child: Text(
-                                  course.grade,
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
+                            return Card(
+                              elevation: 2,
+                              margin: const EdgeInsets.only(bottom: 12),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(16),
+                              ),
+                              child: ListTile(
+                                contentPadding: const EdgeInsets.symmetric(
+                                  horizontal: 16,
+                                  vertical: 8,
+                                ),
+                                leading: Container(
+                                  width: 48,
+                                  height: 48,
+                                  decoration: BoxDecoration(
+                                    color: _getGradeColor(
+                                      course.grade,
+                                    ).withOpacity(0.15),
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: Center(
+                                    child: Text(
+                                      course.grade,
+                                      style: TextStyle(
+                                        color: _getGradeColor(course.grade),
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 20,
+                                      ),
+                                    ),
                                   ),
                                 ),
-                              ),
-                              title: Text(
-                                course.code,
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.bold,
+                                title: Text(
+                                  course.code,
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16,
+                                  ),
                                 ),
-                              ),
-                              subtitle: Text(
-                                '${course.units} Units${course.score != null ? ' (${course.score}%)' : ''}',
-                              ),
-                              trailing: IconButton(
-                                icon: const Icon(
-                                  Icons.delete,
-                                  color: Colors.redAccent,
+                                subtitle: Padding(
+                                  padding: const EdgeInsets.only(top: 4),
+                                  child: Text(
+                                    '${course.units} Units${course.score != null ? ' • ${course.score}%' : ''}',
+                                    style: TextStyle(
+                                      color: Colors.grey.shade700,
+                                    ),
+                                  ),
                                 ),
-                                onPressed: () {
-                                  provider.deleteCourse(
-                                    widget.semesterId,
-                                    course.id,
-                                  );
-                                },
+                                trailing: IconButton(
+                                  icon: const Icon(
+                                    Icons.delete_outline,
+                                    color: Colors.redAccent,
+                                  ),
+                                  onPressed: () {
+                                    provider.deleteCourse(
+                                      widget.semesterId,
+                                      course.id,
+                                    );
+                                  },
+                                ),
                               ),
                             );
                           },
@@ -274,7 +317,13 @@ class _SemesterScreenState extends State<SemesterScreen> {
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
         color: Colors.white,
-        border: Border(bottom: BorderSide(color: Colors.grey.shade300)),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.1),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -286,38 +335,80 @@ class _SemesterScreenState extends State<SemesterScreen> {
                 Text(
                   semester.name,
                   style: const TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
+                    fontSize: 22,
+                    fontWeight: FontWeight.w800,
+                    color: Colors.black87,
                   ),
                 ),
-                const SizedBox(height: 4),
-                Text(
-                  'Registered: $regUnits Units',
-                  style: TextStyle(color: Colors.grey[700], fontSize: 13),
+                const SizedBox(height: 8),
+                Row(
+                  children: [
+                    Icon(
+                      Icons.book_outlined,
+                      size: 14,
+                      color: Colors.grey[600],
+                    ),
+                    const SizedBox(width: 4),
+                    Text(
+                      'Registered: $regUnits',
+                      style: TextStyle(
+                        color: Colors.grey[700],
+                        fontSize: 13,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ],
                 ),
-                Text(
-                  'Passed: $passedUnits Units',
-                  style: TextStyle(color: Colors.grey[700], fontSize: 13),
+                const SizedBox(height: 4),
+                Row(
+                  children: [
+                    Icon(
+                      Icons.check_circle_outline,
+                      size: 14,
+                      color: Colors.grey[600],
+                    ),
+                    const SizedBox(width: 4),
+                    Text(
+                      'Passed: $passedUnits',
+                      style: TextStyle(
+                        color: Colors.grey[700],
+                        fontSize: 13,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),
           ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Text(
-                gpa.toStringAsFixed(2),
-                style: const TextStyle(
-                  fontSize: 36,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.deepPurple,
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            decoration: BoxDecoration(
+              color: Colors.deepPurple.shade50,
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(color: Colors.deepPurple.shade100),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Text(
+                  gpa.toStringAsFixed(2),
+                  style: const TextStyle(
+                    fontSize: 32,
+                    fontWeight: FontWeight.w900,
+                    color: Colors.deepPurple,
+                  ),
                 ),
-              ),
-              Text(
-                'GPA (out of ${provider.is5PointScale ? "5.0" : "4.0"})',
-                style: const TextStyle(color: Colors.grey, fontSize: 12),
-              ),
-            ],
+                Text(
+                  'GPA (${provider.is5PointScale ? "5.0" : "4.0"})',
+                  style: TextStyle(
+                    color: Colors.deepPurple.shade300,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
+            ),
           ),
         ],
       ),
@@ -326,10 +417,26 @@ class _SemesterScreenState extends State<SemesterScreen> {
 
   // ... skipped down to form ...
   Widget _buildCourseForm(BuildContext context, bool is5PointScale) {
-    return Padding(
+    return Container(
       padding: const EdgeInsets.all(16.0),
+      decoration: BoxDecoration(
+        color: Colors.grey.shade50,
+        border: Border.symmetric(
+          horizontal: BorderSide(color: Colors.grey.shade200),
+        ),
+      ),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          const Text(
+            'Add New Course',
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+              color: Colors.black87,
+            ),
+          ),
+          const SizedBox(height: 16),
           Row(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
@@ -338,22 +445,42 @@ class _SemesterScreenState extends State<SemesterScreen> {
                 flex: 2,
                 child: TextField(
                   controller: _codeController,
-                  decoration: const InputDecoration(
-                    labelText: 'Code',
-                    border: OutlineInputBorder(),
+                  decoration: InputDecoration(
+                    labelText: 'Course Code',
+                    hintText: 'e.g. MTH 101',
+                    filled: true,
+                    fillColor: Colors.white,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide(color: Colors.grey.shade300),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide(color: Colors.grey.shade300),
+                    ),
                   ),
                   textCapitalization: TextCapitalization.characters,
                 ),
               ),
-              const SizedBox(width: 8),
+              const SizedBox(width: 12),
               // Units
               Expanded(
                 flex: 1,
                 child: TextField(
                   controller: _unitsController,
-                  decoration: const InputDecoration(
+                  decoration: InputDecoration(
                     labelText: 'Units',
-                    border: OutlineInputBorder(),
+                    hintText: 'e.g. 3',
+                    filled: true,
+                    fillColor: Colors.white,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide(color: Colors.grey.shade300),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide(color: Colors.grey.shade300),
+                    ),
                   ),
                   keyboardType: TextInputType.number,
                 ),
@@ -369,43 +496,60 @@ class _SemesterScreenState extends State<SemesterScreen> {
                 flex: 1,
                 child: TextField(
                   controller: _scoreController,
-                  decoration: const InputDecoration(
-                    labelText: 'Score',
-                    border: OutlineInputBorder(),
+                  decoration: InputDecoration(
+                    labelText: 'Score (%)',
+                    hintText: 'Optional',
+                    filled: true,
+                    fillColor: Colors.white,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide(color: Colors.grey.shade300),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide(color: Colors.grey.shade300),
+                    ),
                   ),
                   keyboardType: TextInputType.number,
                   onChanged: _updateGradeFromScore,
                 ),
               ),
-              const SizedBox(width: 8),
+              const SizedBox(width: 12),
               // Grade Dropdown
               Expanded(
                 flex: 1,
                 child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8),
-                  height: 55, // Match TextField height
+                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                  height: 56, // Match standard TextField height
                   decoration: BoxDecoration(
-                    border: Border.all(color: Colors.grey),
-                    borderRadius: BorderRadius.circular(4),
+                    color: Colors.white,
+                    border: Border.all(color: Colors.grey.shade300),
+                    borderRadius: BorderRadius.circular(12),
                   ),
                   child: DropdownButtonHideUnderline(
                     child: DropdownButton<String>(
                       value: _selectedGrade,
                       isExpanded: true,
+                      icon: const Icon(
+                        Icons.arrow_drop_down,
+                        color: Colors.deepPurple,
+                      ),
                       items: _getGradeOptions(is5PointScale).map((
                         String grade,
                       ) {
                         return DropdownMenuItem<String>(
                           value: grade,
-                          child: Text(grade),
+                          child: Text(
+                            grade,
+                            style: const TextStyle(fontWeight: FontWeight.bold),
+                          ),
                         );
                       }).toList(),
                       onChanged: (String? newValue) {
                         if (newValue != null) {
                           setState(() {
                             _selectedGrade = newValue;
-                            _scoreController
-                                .clear(); // clear score if manually picking grade
+                            _scoreController.clear();
                           });
                         }
                       },
@@ -413,20 +557,30 @@ class _SemesterScreenState extends State<SemesterScreen> {
                   ),
                 ),
               ),
-              const SizedBox(width: 8),
+              const SizedBox(width: 12),
               // Add button
-              SizedBox(
-                height: 55,
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.deepPurple,
-                    foregroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(4),
-                    ),
+              Container(
+                height: 56,
+                width: 56,
+                decoration: BoxDecoration(
+                  gradient: const LinearGradient(
+                    colors: [Colors.deepPurple, Colors.deepPurpleAccent],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
                   ),
+                  borderRadius: BorderRadius.circular(16),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.deepPurpleAccent.withOpacity(0.4),
+                      blurRadius: 8,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
+                ),
+                child: IconButton(
                   onPressed: () => _addCourse(context),
-                  child: const Icon(Icons.add),
+                  icon: const Icon(Icons.add, color: Colors.white, size: 28),
+                  tooltip: 'Add Course',
                 ),
               ),
             ],

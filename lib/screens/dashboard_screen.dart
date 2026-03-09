@@ -38,22 +38,25 @@ class DashboardScreen extends StatelessWidget {
                 child: provider.semesters.isEmpty
                     ? _buildEmptyState()
                     : ListView.builder(
-                        padding: const EdgeInsets.only(top: 8, bottom: 80),
+                        padding: const EdgeInsets.only(
+                          top: 16,
+                          bottom: 80,
+                          left: 16,
+                          right: 16,
+                        ),
                         itemCount: provider.semesters.length,
                         itemBuilder: (context, index) {
                           final semester = provider.semesters[index];
                           final gpa = provider.calculateSemesterGPA(semester);
                           return Card(
-                            elevation: 2,
-                            margin: const EdgeInsets.symmetric(
-                              horizontal: 16,
-                              vertical: 8,
-                            ),
+                            elevation: 4,
+                            shadowColor: Colors.deepPurple.withOpacity(0.2),
+                            margin: const EdgeInsets.only(bottom: 16),
                             shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(16),
+                              borderRadius: BorderRadius.circular(20),
                             ),
                             child: InkWell(
-                              borderRadius: BorderRadius.circular(16),
+                              borderRadius: BorderRadius.circular(20),
                               onTap: () {
                                 Navigator.push(
                                   context,
@@ -71,7 +74,7 @@ class DashboardScreen extends StatelessWidget {
                                 );
                               },
                               child: Padding(
-                                padding: const EdgeInsets.all(16.0),
+                                padding: const EdgeInsets.all(20.0),
                                 child: Row(
                                   children: [
                                     Expanded(
@@ -83,14 +86,27 @@ class DashboardScreen extends StatelessWidget {
                                             semester.name,
                                             style: const TextStyle(
                                               fontWeight: FontWeight.bold,
-                                              fontSize: 16,
+                                              fontSize: 18,
                                             ),
                                           ),
-                                          const SizedBox(height: 4),
-                                          Text(
-                                            '${semester.courses.length} courses',
-                                            style: TextStyle(
-                                              color: Colors.grey[600],
+                                          const SizedBox(height: 8),
+                                          Container(
+                                            padding: const EdgeInsets.symmetric(
+                                              horizontal: 10,
+                                              vertical: 4,
+                                            ),
+                                            decoration: BoxDecoration(
+                                              color: Colors.grey.shade100,
+                                              borderRadius:
+                                                  BorderRadius.circular(12),
+                                            ),
+                                            child: Text(
+                                              '${semester.courses.length} Courses',
+                                              style: TextStyle(
+                                                color: Colors.grey[800],
+                                                fontSize: 12,
+                                                fontWeight: FontWeight.w500,
+                                              ),
                                             ),
                                           ),
                                         ],
@@ -98,14 +114,19 @@ class DashboardScreen extends StatelessWidget {
                                     ),
                                     Container(
                                       padding: const EdgeInsets.symmetric(
-                                        horizontal: 16,
-                                        vertical: 8,
+                                        horizontal: 20,
+                                        vertical: 12,
                                       ),
                                       decoration: BoxDecoration(
-                                        color: Colors.deepPurple.withOpacity(
-                                          0.1,
+                                        gradient: LinearGradient(
+                                          colors: [
+                                            Colors.deepPurple.shade50,
+                                            Colors.deepPurple.shade100,
+                                          ],
+                                          begin: Alignment.topLeft,
+                                          end: Alignment.bottomRight,
                                         ),
-                                        borderRadius: BorderRadius.circular(12),
+                                        borderRadius: BorderRadius.circular(16),
                                       ),
                                       child: Column(
                                         mainAxisAlignment:
@@ -115,15 +136,17 @@ class DashboardScreen extends StatelessWidget {
                                             gpa.toStringAsFixed(2),
                                             style: const TextStyle(
                                               fontWeight: FontWeight.bold,
-                                              fontSize: 18,
+                                              fontSize: 20,
                                               color: Colors.deepPurple,
                                             ),
                                           ),
-                                          const Text(
+                                          const SizedBox(height: 2),
+                                          Text(
                                             'GPA',
                                             style: TextStyle(
                                               fontSize: 12,
-                                              color: Colors.deepPurple,
+                                              fontWeight: FontWeight.w600,
+                                              color: Colors.deepPurple.shade700,
                                             ),
                                           ),
                                         ],
