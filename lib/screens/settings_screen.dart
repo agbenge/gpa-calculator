@@ -1,9 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../providers/gpa_provider.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
+
+  Future<void> _launchURL(String url) async {
+    final Uri uri = Uri.parse(url);
+    if (!await launchUrl(uri, mode: LaunchMode.externalApplication)) {
+      throw Exception('Could not launch $url');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -82,6 +90,36 @@ class SettingsScreen extends StatelessWidget {
                             : () => provider.syncWithDrive(),
                       ),
                     ],
+                  ],
+                ),
+              ),
+              const SizedBox(height: 24),
+              const Text(
+                'Legal & Support',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 8),
+              Card(
+                child: Column(
+                  children: [
+                    ListTile(
+                      leading: const Icon(Icons.privacy_tip_outlined),
+                      title: const Text('Privacy Policy'),
+                      trailing: const Icon(Icons.open_in_new, size: 20),
+                      onTap: () => _launchURL(
+                        'https://raph-ray.blogspot.com/2023/02/gpa-calculator.html#app_privacy',
+                      ),
+                    ),
+                    const Divider(height: 1),
+                    ListTile(
+                      leading: const Icon(Icons.person_remove_outlined),
+                      title: const Text('Delete Account / Data'),
+                      subtitle: const Text('Request data deletion'),
+                      trailing: const Icon(Icons.open_in_new, size: 20),
+                      onTap: () => _launchURL(
+                        'https://raph-ray.blogspot.com/2023/02/gpa-calculator.html#delete_account',
+                      ),
+                    ),
                   ],
                 ),
               ),
