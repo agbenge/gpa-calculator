@@ -43,6 +43,9 @@ dependencies:
   googleapis_auth: ^2.0.0
   gal: ^2.3.2
   image_picker: ^1.2.1
+  google_sign_in: ^6.2.1
+  workmanager: ^0.5.2
+  http: ^1.2.1
 
 dev_dependencies:
   flutter_test:

@@ -39,14 +39,50 @@ class SettingsScreen extends StatelessWidget {
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 8),
-              const Card(
-                child: ListTile(
-                  leading: Icon(Icons.cloud_upload_outlined),
-                  title: Text('Backup to Drive'),
-                  subtitle: Text(
-                    'Setup OAuth keys to enable direct Drive sync. (Coming Soon)',
-                  ),
-                  trailing: Icon(Icons.chevron_right),
+              Card(
+                child: Column(
+                  children: [
+                    SwitchListTile(
+                      secondary: const Icon(Icons.cloud_upload_outlined),
+                      title: const Text('Connect to Drive'),
+                      subtitle: Text(
+                        provider.isDriveConnected
+                            ? 'Connected'
+                            : 'Backup your data to the cloud',
+                      ),
+                      value: provider.isDriveConnected,
+                      onChanged: (value) {
+                        if (value) {
+                          provider.signInToDrive();
+                        } else {
+                          provider.signOutFromDrive();
+                        }
+                      },
+                    ),
+                    if (provider.isDriveConnected) ...[
+                      const Divider(),
+                      ListTile(
+                        leading: provider.isSyncing
+                            ? const SizedBox(
+                                width: 24,
+                                height: 24,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                ),
+                              )
+                            : const Icon(Icons.sync),
+                        title: const Text('Sync Now'),
+                        subtitle: Text(
+                          provider.lastSyncTime != null
+                              ? 'Last sync: ${provider.lastSyncTime!.toString().split('.').first}'
+                              : 'Never synced',
+                        ),
+                        onTap: provider.isSyncing
+                            ? null
+                            : () => provider.syncWithDrive(),
+                      ),
+                    ],
+                  ],
                 ),
               ),
             ],

@@ -1,7 +1,9 @@
+import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import '../models/semester.dart';
 import '../models/course.dart';
 import '../services/storage_service.dart';
+import '../services/google_drive_service.dart';
 
 class GpaProvider with ChangeNotifier {
   List<Semester> _semesters = [];
@@ -11,17 +13,68 @@ class GpaProvider with ChangeNotifier {
   bool get is5PointScale => _is5PointScale;
 
   final StorageService _storageService = StorageService();
+  final GoogleDriveService _googleDriveService = GoogleDriveService();
+
+  bool _isSyncing = false;
+  bool _isDriveConnected = false;
+  DateTime? _lastSyncTime;
+
+  bool get isSyncing => _isSyncing;
+  bool get isDriveConnected => _isDriveConnected;
+  DateTime? get lastSyncTime => _lastSyncTime;
 
   Future<void> loadData() async {
     _semesters = await _storageService.loadSemesters();
     _is5PointScale = await _storageService.loadScalePreference();
+    _isDriveConnected = await _googleDriveService.isSignedIn();
     notifyListeners();
+  }
+
+  Future<void> signInToDrive() async {
+    final account = await _googleDriveService.signIn();
+    if (account != null) {
+      _isDriveConnected = true;
+      notifyListeners();
+      await syncWithDrive();
+    }
+  }
+
+  Future<void> signOutFromDrive() async {
+    await _googleDriveService.signOut();
+    _isDriveConnected = false;
+    notifyListeners();
+  }
+
+  Future<void> syncWithDrive() async {
+    if (_isSyncing || !_isDriveConnected) return;
+
+    _isSyncing = true;
+    notifyListeners();
+
+    try {
+      final localData = jsonEncode({
+        'semesters': _semesters.map((s) => s.toJson()).toList(),
+        'is5PointScale': _is5PointScale,
+        'lastModified': DateTime.now().toIso8601String(),
+      });
+
+      final success = await _googleDriveService.uploadData(localData);
+      if (success) {
+        _lastSyncTime = DateTime.now();
+      }
+    } catch (e) {
+      debugPrint("Sync Error: $e");
+    } finally {
+      _isSyncing = false;
+      notifyListeners();
+    }
   }
 
   void toggleScale(bool is5Point) {
     _is5PointScale = is5Point;
     _storageService.saveScalePreference(_is5PointScale);
     notifyListeners();
+    syncWithDrive();
   }
 
   void addSemester(String name) {
@@ -71,6 +124,7 @@ class GpaProvider with ChangeNotifier {
 
   void _save() {
     _storageService.saveSemesters(_semesters);
+    syncWithDrive();
     notifyListeners();
   }
 
