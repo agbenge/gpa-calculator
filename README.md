@@ -1,17 +1,32 @@
-# calculator
+# GPA Calculator
 
-A new Flutter project.
+A Flutter application built to help students effortlessly track and calculate their academic performance. The app provides a fast, offline, and secure way to manage course grades, compute Semester GPAs, and keep track of Cumulative GPAs (CGPA) over multiple academic sessions.
+
+## Features
+
+- **Dual Grading Systems**: Built-in support for switching between 4.0 and 5.0 grading scales.
+- **Real-Time Calculations**: Instant updates to Semester GPA, CGPA, Total Registered Units, and Total Passed Units.
+- **Degree Classification**: Automatic categorization of GPA into degree classifications (e.g., First Class, Second Class Upper).
+- **100% Offline & Private**: All academic data is persistently stored locally on your device with complete privacy.
+
+## Documentation
+
+For detailed information on how to use the app, its scope, and privacy handling practices, please refer to the [Application Documentation](doc.md).
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+To explore or run this project locally, ensure you have the [Flutter SDK](https://docs.flutter.dev/get-started/install) installed.
 
-A few resources to get you started if this is your first Flutter project:
+```bash
+# Clone the repository
+git clone https://github.com/agbenge/gpa-calculator.git
 
-- [Learn Flutter](https://docs.flutter.dev/get-started/learn-flutter)
-- [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Flutter learning resources](https://docs.flutter.dev/reference/learning-resources)
+# Navigate to the project directory
+cd gpa-calculator
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+# Install dependencies
+flutter pub get
+
+# Run the app
+flutter run
+```
