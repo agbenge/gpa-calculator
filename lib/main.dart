@@ -28,7 +28,7 @@ void main() async {
     "1",
     syncTaskName,
     frequency: const Duration(hours: 24),
-    existingWorkPolicy: ExistingWorkPolicy.keep,
+    existingWorkPolicy: ExistingPeriodicWorkPolicy.keep,
     constraints: Constraints(networkType: NetworkType.connected),
   );
 
