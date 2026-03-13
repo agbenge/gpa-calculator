@@ -194,6 +194,7 @@ class DashboardScreen extends StatelessWidget {
     final String classOfDegree = provider.getClassOfDegree();
     final int totalReg = provider.getTotalRegisteredUnits();
     final int totalPass = provider.getTotalPassedUnits();
+    final bool isDriveConnected = provider.isDriveConnected;
 
     return Container(
       width: double.infinity,
@@ -207,10 +208,18 @@ class DashboardScreen extends StatelessWidget {
       ),
       child: Column(
         children: [
-          const Text(
-            'Cumulative GPA',
-            style: TextStyle(color: Colors.white70, fontSize: 16),
-          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+
+              Icon(isDriveConnected?Icons.cloud:Icons.cloud_off, color: Colors.grey[700]),
+              const Text(
+                'Cumulative GPA',
+                style: TextStyle(color: Colors.white70, fontSize: 16),
+              )
+            ],
+          )
+          ,
           const SizedBox(height: 8),
           Text(
             cgpa.toStringAsFixed(2),

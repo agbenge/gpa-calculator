@@ -4,6 +4,7 @@ import 'providers/gpa_provider.dart';
 import 'screens/dashboard_screen.dart';
 
 import 'package:workmanager/workmanager.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 const String syncTaskName = "com.softcare.calculator.syncTask";
 
@@ -21,7 +22,7 @@ void callbackDispatcher() {
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
+  await dotenv.load(fileName: ".env");
   await Workmanager().initialize(callbackDispatcher, isInDebugMode: false);
 
   await Workmanager().registerPeriodicTask(
@@ -41,6 +42,7 @@ void main() async {
       child: const MyApp(),
     ),
   );
+  await gpaProvider.loadDriveStatus();
 }
 
 class MyApp extends StatelessWidget {

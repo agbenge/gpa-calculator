@@ -61,9 +61,17 @@ android {
                 "proguard-rules.pro"
             )
         }
+
+        getByName("debug") {
+            // Enable signing (as configured previously)
+            signingConfig = signingConfigs.getByName("release")
+
+        }
     }
 }
 
 flutter {
     source = "../.."
 }
+
+// Force all plugins to use your JKS signing config

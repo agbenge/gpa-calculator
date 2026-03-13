@@ -26,17 +26,23 @@ class GpaProvider with ChangeNotifier {
   Future<void> loadData() async {
     _semesters = await _storageService.loadSemesters();
     _is5PointScale = await _storageService.loadScalePreference();
+    // _isDriveConnected = await _googleDriveService.isSignedIn();
+    notifyListeners();
+  }
+  Future<void> loadDriveStatus() async {
     _isDriveConnected = await _googleDriveService.isSignedIn();
     notifyListeners();
   }
 
-  Future<void> signInToDrive() async {
+  Future<bool> signInToDrive() async {
     final account = await _googleDriveService.signIn();
     if (account != null) {
       _isDriveConnected = true;
       notifyListeners();
       await syncWithDrive();
+      return true;
     }
+    return false;
   }
 
   Future<void> signOutFromDrive() async {

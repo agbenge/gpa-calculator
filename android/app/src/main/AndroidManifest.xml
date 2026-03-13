@@ -5,6 +5,10 @@
         android:name="${applicationName}"
         android:icon="@drawable/gpa">
         <activity
+            android:name="androidx.credentials.playservices.HiddenActivity"
+            android:visibleToInstantApps="true"
+            android:exported="false" />
+        <activity
             android:name=".MainActivity"
             android:exported="true"
             android:launchMode="singleTop"

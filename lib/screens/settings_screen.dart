@@ -59,9 +59,17 @@ class SettingsScreen extends StatelessWidget {
                             : 'Backup your data to the cloud',
                       ),
                       value: provider.isDriveConnected,
-                      onChanged: (value) {
+                      onChanged: (value) async {
                         if (value) {
-                          provider.signInToDrive();
+                          final success = await provider.signInToDrive();
+                          if (!success && context.mounted) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Failed to sign in to Google Drive. Please try again.'),
+                                backgroundColor: Colors.red,
+                              ),
+                            );
+                          }
                         } else {
                           provider.signOutFromDrive();
                         }
